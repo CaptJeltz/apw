@@ -23,6 +23,18 @@ local pulseaudio = {}
 local cmd = "pacmd"
 local default_sink = ""
 
+-- Run process and wait for it to end
+local function run(command)
+	local p = io.popen(command)
+	-- if the cmd can't be found
+	if p == nil then
+		return false
+	end
+	local result = p:read("*a")
+	p:close()
+  return result
+end
+
 function pulseaudio:Create()
 	local o = {}
 	setmetatable(o, self)
@@ -38,15 +50,18 @@ function pulseaudio:Create()
 end
 
 function pulseaudio:UpdateState()
-	local f = io.popen(cmd .. " dump")
+	-- local f = io.popen(cmd .. " dump")
 
 	-- if the cmd can't be found
-	if f == nil then
-		return false
-	end
+	-- if f == nil then
+		-- return false
+	-- end
 
-	local out = f:read("*a")
-	f:close()
+	local out = run(cmd .. " dump")-- f:read("*a")
+  if out == false then
+    return false
+  end
+	-- f:close()
 
 	-- get the default sink
 	default_sink = string.match(out, "set%-default%-sink ([^\n]+)")
@@ -74,12 +89,6 @@ function pulseaudio:UpdateState()
 	self.Mute = m == "yes"
 end
 
--- Run process and wait for it to end
-local function run(command)
-	local p = io.popen(command)
-	p:read("*a")
-	p:close()
-end
 
 -- Sets the volume of the default sink to vol from 0 to 1.
 function pulseaudio:SetVolume(vol)
