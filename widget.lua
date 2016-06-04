@@ -35,7 +35,7 @@ local awful = require("awful")
 local spawn_with_shell = awful.util.spawn_with_shell or awful.spawn.with_shell
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local pulseaudio = require("apw.pulseaudio")
+local pulseaudio = require("widgets.apw.pulseaudio")
 local math = require("math")
 -- default colors overridden by Beautiful theme
 color = beautiful.apw_fg_color or color
